@@ -1,1 +1,95 @@
 
+import javax.swing.*;
+import java.awt.*;
+
+public class Main extends JFrame {
+
+    private JTextField txtNombre, txtPrecio;
+    private JTextField txtStock, txtCategoria;
+    private JLabel lblProducto;
+    private Producto producto = new Producto();
+
+    public Main() {
+        setTitle("Gestion de Productos");
+        setSize(500, 350);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(6, 2, 10, 10));
+
+        add(new JLabel("Nombre:"));
+        txtNombre = new JTextField();
+        add(txtNombre);
+
+        add(new JLabel("Precio:"));
+        txtPrecio = new JTextField();
+        add(txtPrecio);
+
+        add(new JLabel("Stock:"));
+        txtStock = new JTextField();
+        add(txtStock);
+
+        add(new JLabel("Categoria:"));
+        txtCategoria = new JTextField();
+        add(txtCategoria);
+
+        JButton btnActualizar =
+            new JButton("Actualizar Producto");
+        add(btnActualizar);
+
+        lblProducto = new JLabel("Sin datos");
+        add(lblProducto);
+
+        btnActualizar.addActionListener(e -> {
+            try {
+                String nombre = txtNombre.getText().trim();
+                String categoria =
+                    txtCategoria.getText().trim();
+
+                double precio = Double.parseDouble(
+                    txtPrecio.getText().trim());
+
+                int stock = Integer.parseInt(
+                    txtStock.getText().trim());
+
+                if (nombre.isEmpty() || categoria.isEmpty()
+                        || precio < 0 || stock < 0
+                        || !Double.isFinite(precio)) {
+                    throw new IllegalArgumentException();
+                }
+
+                producto.nombre = nombre;
+                producto.precio = precio;
+                producto.cantidadStock = stock;
+                producto.categoria = categoria;
+
+                lblProducto.setText(
+                    "<html>Producto: " + producto.nombre
+                    + "<br>Precio: S/ " + producto.precio
+                    + "<br>Stock: " + producto.cantidadStock
+                    + "<br>Categoria: " + producto.categoria
+                    + "</html>"
+                );
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    this, "Precio o stock incorrecto.");
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(
+                    this, "Ingrese datos validos.");
+            }
+        });
+    }
+
+    static class Producto {
+        String nombre;
+        double precio;
+        int cantidadStock;
+        String categoria;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() ->
+            new Main().setVisible(true));
+    }
+}
+
