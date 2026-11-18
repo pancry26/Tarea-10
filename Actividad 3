@@ -1,1 +1,62 @@
 
+import javax.swing.*;
+import javax.sound.sampled.*;
+import java.awt.*;
+import java.io.File;
+
+public class Main extends JFrame {
+
+    private Clip clip;
+
+    public Main() {
+        setTitle("Multimedia con Swing");
+        setSize(400, 200);
+        setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JButton btnReproducir = new JButton("Reproducir");
+        JButton btnDetener = new JButton("Detener");
+
+        add(btnReproducir);
+        add(btnDetener);
+
+        btnReproducir.addActionListener(e -> {
+            try {
+                if (clip != null) {
+                    clip.close();
+                }
+
+                File archivo = new File("audio.wav");
+
+                AudioInputStream audio =
+                    AudioSystem.getAudioInputStream(archivo);
+
+                clip = AudioSystem.getClip();
+                clip.open(audio);
+                audio.close();
+                clip.start();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al reproducir audio: "
+                    + ex.getMessage()
+                );
+            }
+        });
+
+        btnDetener.addActionListener(e -> {
+            if (clip != null) {
+                clip.stop();
+                clip.setFramePosition(0);
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() ->
+            new Main().setVisible(true));
+    }
+}
+
