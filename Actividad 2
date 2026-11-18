@@ -1,1 +1,63 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+
+public class Main extends JPanel {
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.setRenderingHint(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON
+        );
+
+        // Graficos simples
+        g2.setColor(Color.BLUE);
+        g2.drawLine(30, 40, 180, 40);
+
+        g2.setColor(Color.RED);
+        g2.drawRect(30, 70, 120, 60);
+
+        g2.setColor(Color.GREEN);
+        g2.fillOval(200, 70, 100, 60);
+
+        g2.setColor(Color.BLACK);
+        g2.drawString("Graficos simples", 30, 160);
+
+        // Graficos avanzados
+        AffineTransform original = g2.getTransform();
+
+        g2.setColor(Color.ORANGE);
+        g2.fillRect(30, 210, 100, 60);
+
+        g2.rotate(Math.toRadians(30), 230, 240);
+        g2.setColor(Color.MAGENTA);
+        g2.fillRect(180, 210, 100, 60);
+
+        g2.setTransform(original);
+
+        g2.setStroke(new BasicStroke(4));
+        g2.setColor(Color.BLUE);
+        g2.drawOval(100, 320, 150, 70);
+
+        g2.setColor(Color.BLACK);
+        g2.drawString("Graphics2D: rotacion y trazos", 30, 420);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("Graficos Swing");
+            ventana.add(new Main());
+            ventana.setSize(450, 500);
+            ventana.setDefaultCloseOperation(
+                JFrame.EXIT_ON_CLOSE);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
+    }
+}
 
