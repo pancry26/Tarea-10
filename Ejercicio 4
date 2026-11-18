@@ -1,1 +1,85 @@
+import javax.swing.*;
+import javax.sound.sampled.*;
+import java.awt.*;
+import java.io.File;
+
+public class Main extends JFrame {
+
+    private Clip clip;
+    private long posicionPausa = 0;
+
+    public Main() {
+        setTitle("Reproductor de Musica");
+        setSize(450, 220);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout(FlowLayout.CENTER, 15, 40));
+
+        JButton btnReproducir = new JButton("Reproducir");
+        JButton btnPausar = new JButton("Pausar");
+        JButton btnReanudar = new JButton("Reanudar");
+
+        add(btnReproducir);
+        add(btnPausar);
+        add(btnReanudar);
+
+        btnReproducir.addActionListener(e -> reproducir());
+        btnPausar.addActionListener(e -> pausar());
+        btnReanudar.addActionListener(e -> reanudar());
+    }
+
+    private void reproducir() {
+        try {
+            if (clip != null) {
+                clip.stop();
+                clip.close();
+            }
+
+            File archivo = new File("musica.wav");
+
+            AudioInputStream audio =
+                AudioSystem.getAudioInputStream(archivo);
+
+            clip = AudioSystem.getClip();
+            clip.open(audio);
+            audio.close();
+
+            posicionPausa = 0;
+            clip.setMicrosecondPosition(0);
+            clip.start();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error al reproducir: " + ex.getMessage()
+            );
+        }
+    }
+
+    private void pausar() {
+        if (clip != null && clip.isRunning()) {
+            posicionPausa = clip.getMicrosecondPosition();
+            clip.stop();
+        }
+    }
+
+    private void reanudar() {
+        if (clip != null && !clip.isRunning()) {
+            if (posicionPausa < clip.getMicrosecondLength()) {
+                clip.setMicrosecondPosition(posicionPausa);
+                clip.start();
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "La reproduccion ya termino."
+                );
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() ->
+            new Main().setVisible(true));
+    }
+}
 
