@@ -1,1 +1,71 @@
 
+
+import javax.swing.*;
+import javax.sound.sampled.*;
+import java.awt.*;
+import java.io.File;
+
+public class Main extends JFrame {
+
+    private Clip clip;
+
+    public Main() {
+        setTitle("Reproductor de Efectos de Sonido");
+        setSize(450, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout(FlowLayout.CENTER, 15, 30));
+
+        JButton btnAplausos = new JButton("Aplausos");
+        JButton btnCampana = new JButton("Campana");
+        JButton btnExplosion = new JButton("Explosion");
+
+        add(btnAplausos);
+        add(btnCampana);
+        add(btnExplosion);
+
+        btnAplausos.addActionListener(e ->
+            reproducir("aplausos.wav"));
+
+        btnCampana.addActionListener(e ->
+            reproducir("campana.wav"));
+
+        btnExplosion.addActionListener(e ->
+            reproducir("explosion.wav"));
+    }
+
+    private void reproducir(String archivo) {
+        try {
+            if (clip != null) {
+                clip.stop();
+                clip.close();
+            }
+
+            File sonido = new File(archivo);
+
+            AudioInputStream audio =
+                AudioSystem.getAudioInputStream(sonido);
+
+            clip = AudioSystem.getClip();
+            clip.open(audio);
+            audio.close();
+
+            clip.start();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                this,
+                "No se pudo reproducir " + archivo
+                + "\n" + ex.getMessage(),
+                "Error de audio",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() ->
+            new Main().setVisible(true));
+    }
+}
+
