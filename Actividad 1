@@ -1,1 +1,78 @@
+//requires java.desktop;
+import javax.swing.*;
+import java.awt.*;
+
+public class main extends JFrame {
+
+    private JTextField txtNombre, txtEdad, txtSexo;
+    private JLabel lblResultado;
+    private Persona persona = new Persona("Juan", 20, "Masculino");
+
+    public main() {
+        setTitle("Binding de Datos Manual");
+        setSize(420, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(5, 2, 10, 10));
+
+        add(new JLabel("Nombre:"));
+        txtNombre = new JTextField(persona.nombre);
+        add(txtNombre);
+
+        add(new JLabel("Edad:"));
+        txtEdad = new JTextField("" + persona.edad);
+        add(txtEdad);
+
+        add(new JLabel("Sexo:"));
+        txtSexo = new JTextField(persona.sexo);
+        add(txtSexo);
+
+        JButton btnActualizar = new JButton("Actualizar Modelo");
+        add(btnActualizar);
+
+        lblResultado = new JLabel("Datos sin modificar");
+        add(lblResultado);
+
+        btnActualizar.addActionListener(e -> {
+            try {
+                int edad = Integer.parseInt(txtEdad.getText());
+
+                if (edad < 0) {
+                    throw new NumberFormatException();
+                }
+
+                persona.nombre = txtNombre.getText();
+                persona.edad = edad;
+                persona.sexo = txtSexo.getText();
+
+                lblResultado.setText(
+                    "<html>Nombre: " + persona.nombre
+                    + "<br>Edad: " + persona.edad
+                    + "<br>Sexo: " + persona.sexo + "</html>"
+                );
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    this, "Ingrese una edad válida.");
+            }
+        });
+    }
+
+    static class Persona {
+        String nombre;
+        int edad;
+        String sexo;
+
+        Persona(String nombre, int edad, String sexo) {
+            this.nombre = nombre;
+            this.edad = edad;
+            this.sexo = sexo;
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() ->
+            new main().setVisible(true));
+    }
+}
 
